@@ -76,9 +76,7 @@ $(function() {
     describe('Initial Entries', function() {
         beforeEach(function(done) {
             $('.feed').empty();
-            loadFeed(1, function() {
-                done();
-            });
+            loadFeed(1, done);
         });
 
         /* A test that ensures when the loadFeed
@@ -87,25 +85,20 @@ $(function() {
         * Remember, loadFeed() is asynchronous so this test will require
         * the use of Jasmine's beforeEach and asynchronous done() function.
         */
-        it('are loaded in the container after loadFeed is called', function(done) {
+        it('are loaded in the container after loadFeed is called', function() {
             var entries = $('.feed .entry');
 
             expect(entries.length).not.toBe(0);
-            done();
         });
     });
 
     describe('New Feed Selection', function() {
-        var initialEntryUrl;
+        var initialContent;
 
         beforeEach(function(done) {
-
             loadFeed(getNextFeedIndex(), function() {
-                initialEntryUrl = $('.entry-link').prop('href');
-
-                loadFeed(getNextFeedIndex(), function() {
-                    done();
-                });
+                initialContent = getContent();
+                loadFeed(getNextFeedIndex(), done);
             });
         });
 
@@ -113,12 +106,14 @@ $(function() {
         * by the loadFeed function that the content actually changes.
         * Remember, loadFeed() is asynchronous.
         */
-        it('content is changed', function(done) {
-            var newEntryUrl = $('.entry-link').prop('href');
-
-            expect(newEntryUrl).not.toBe(initialEntryUrl);
-            done();
+        it('content is changed', function() {
+            var newContent = getContent();
+            expect(newContent).not.toBe(initialContent);
         });
+
+        function getContent() {
+            return $('.feed .entry').html();
+        }
 
         function getNextFeedIndex() {
             var currentFeedName = $(".header-title").eq(0).text(),
@@ -128,6 +123,4 @@ $(function() {
             return currentFeedIndex === lastFeedIndex ? 0 : currentFeedIndex + 1;
         }
     });
-
-
 } ());
